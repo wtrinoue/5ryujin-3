@@ -48,8 +48,8 @@ public class RecordManager : MonoBehaviour
         int pieceType,
         int rotation,
         bool flipped,
-        float x,
-        float y,
+        int x,
+        int y,
         bool player,
         bool touchdown
     )

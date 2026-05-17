@@ -8,7 +8,7 @@ public class MoveData
     public int pieceType;     // 駒の種類
     public int rotation;      // 回転
     public bool flipped;      // 反転
-    public float x;           // X座標
-    public float y;           // Y座標
+    public int x;           // X座標
+    public int y;           // Y座標
     public bool touchdown;    // タッチダウン
 }

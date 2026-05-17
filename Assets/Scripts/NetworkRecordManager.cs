@@ -13,8 +13,8 @@ public class NetworkRecordManager : NetworkBehaviour
         int pieceType,
         int rotation,
         bool flipped,
-        float x,
-        float y,
+        int x,
+        int y,
         bool player,
         bool touchdown
     )
@@ -27,8 +27,8 @@ public class NetworkRecordManager : NetworkBehaviour
         int pieceType,
         int rotation,
         bool flipped,
-        float x,
-        float y,
+        int x,
+        int y,
         bool player,
         bool touchdown
     )

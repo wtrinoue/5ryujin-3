@@ -199,8 +199,8 @@ public class PieceCursor : MonoBehaviour
         {
             int rotation = GetCurrentRotation();
             bool flipped = IsCurrentlyFlipped();
-            float x = transform.position.x;
-            float y = transform.position.y;
+            int x =  Mathf.RoundToInt(transform.position.x);
+            int y = Mathf.RoundToInt(transform.position.y);
             bool player = Board.turn;
 
             bool touchdown = (number == 12);
