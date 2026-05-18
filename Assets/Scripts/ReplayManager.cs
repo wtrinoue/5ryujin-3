@@ -139,7 +139,7 @@ public class ReplayManager : MonoBehaviour
         }
         else
         {
-            PieceType type = (PieceType)move.pieceType;
+            PieceType type = move.pieceType;
 
             if (!prefabDict.TryGetValue(type, out prefab))
             {
@@ -174,7 +174,7 @@ public class ReplayManager : MonoBehaviour
         replayObjects.Add(obj);
 
         // P駒管理（必要なら残す）
-        if (!move.touchdown && move.pieceType == (int)PieceType.P)
+        if (!move.touchdown && move.pieceType == PieceType.P)
         {
             startPObjects[move.player] = obj;
         }

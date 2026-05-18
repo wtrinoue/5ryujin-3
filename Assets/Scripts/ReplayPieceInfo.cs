@@ -2,6 +2,6 @@ using UnityEngine;
 
 public class ReplayPieceInfo : MonoBehaviour
 {
-    public int pieceType;
+    public PieceType pieceType;
     public bool player;
 }

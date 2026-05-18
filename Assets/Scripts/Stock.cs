@@ -4,18 +4,24 @@ using UnityEngine.Rendering;
 
 public class Stock : MonoBehaviour
 {
-    int count = 5;
-    public int pieceNumber;     // この在庫が何番の駒か
-    public bool isFirstPlayer;  // 先手側なら false / 後手側なら true など、Board.turn と合わせる
+    private int count = 5;
 
+    public PieceType pieceType;
+    public bool isFirstPlayer;
     public GameObject image;
-    public GameObject image2;
-    public List<GameObject> images = new List<GameObject>();
     public float imageDistance;
+
+    private readonly List<GameObject> stockIcons = new List<GameObject>();
 
     void Start()
     {
-        for (int i = 0; i < 5; i++)
+        if (image == null)
+        {
+            Debug.LogWarning("Stock image is not set: " + pieceType);
+            return;
+        }
+
+        for (int i = 0; i < count; i++)
         {
             GameObject im = Instantiate(image, transform);
 
@@ -28,32 +34,32 @@ public class Stock : MonoBehaviour
                 sg.sortingOrder = 10 - i;
             }
 
-            images.Add(im);
+            stockIcons.Add(im);
         }
     }
 
     void OnMouseDown()
     {
-        Select(pieceNumber, isFirstPlayer);
+        Select(pieceType, isFirstPlayer);
     }
 
     public void Decrement()
     {
         count--;
 
-        if (images.Count > 0)
+        if (stockIcons.Count > 0)
         {
-            Destroy(images[images.Count - 1]);
-            images.RemoveAt(images.Count - 1);
+            Destroy(stockIcons[stockIcons.Count - 1]);
+            stockIcons.RemoveAt(stockIcons.Count - 1);
         }
     }
 
-    public void Select(int n, bool turn)
+    public void Select(PieceType type, bool turn)
     {
         if (turn != Board.turn) return;
         if (count <= 0) return;
         if (PieceCursor.instance == null) return;
 
-        PieceCursor.instance.Select(n, this);
+        PieceCursor.instance.Select(type, this);
     }
 }

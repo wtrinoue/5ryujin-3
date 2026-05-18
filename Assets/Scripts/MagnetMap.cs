@@ -63,7 +63,7 @@ public class Map
         
         for (int i = 0; i < piece.childMagnets.Count; i++)
         {
-            if (piece.number == 11)
+            if (piece.pieceType == PieceType.P)
             {
                 var p = piece.transform.GetChild(0).Find("Pointer");
                 var y = p.transform.position.y;
@@ -138,7 +138,7 @@ public class Map
             var t = piece.childTiles[i];
             var tp = ToTuple(t.transform.position);
             this.placedTiles.Add(tp, Board.turn);
-            if (piece.number == 12)
+            if (piece.pieceType == PieceType.td)
             {
                 if (Board.turn)
                 {
@@ -165,7 +165,7 @@ public class Map
             
             var m = piece.childMagnets[i];
             var t = ToTuple(m.transform.position);
-            if (magnetMap.ContainsKey(t)||piece.number == 12)
+            if (magnetMap.ContainsKey(t)||piece.pieceType == PieceType.td)
             {
 
             }
@@ -174,7 +174,7 @@ public class Map
                 magnetMap.Add(t, (player, num));
             }
         }
-        if (piece.number == 12)
+        if (piece.pieceType == PieceType.td)
         {
             //Debug.Log(0);
             var p = pdict[(Board.turn, num)];

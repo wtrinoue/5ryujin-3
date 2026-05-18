@@ -45,7 +45,7 @@ public class RecordManager : MonoBehaviour
     // 手の記録
     // =========================
     public void AddMove(
-        int pieceType,
+        PieceType pieceType,
         int rotation,
         bool flipped,
         int x,

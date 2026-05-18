@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class PieceButton : MonoBehaviour
 {
-    public int number; // 0～12
+    public PieceType pieceType; // ★ int → enum に変更
     public bool turn;
 
     [SerializeField] TextMeshProUGUI tmp;
@@ -29,37 +29,30 @@ public class PieceButton : MonoBehaviour
 
     public void ClickSelect()
     {
-        Debug.Log("PieceButtonが押されました: " + gameObject.name + " number=" + number + " turn=" + turn);
+        Debug.Log("PieceButtonが押されました: " + gameObject.name + " pieceType=" + pieceType + " turn=" + turn);
 
-        // 自分の手番でないボタンは押せない
         if (Board.turn != turn)
         {
             Debug.Log("手番が違うため選択できません。");
             return;
         }
 
-        // TDボタンは Stock を使わず、直接 PieceCursor に渡す
-        if (number == 12)
+        // TD処理
+        if (pieceType == PieceType.td)
         {
             if (PieceCursor.instance != null)
             {
-                PieceCursor.instance.Select(number, null);
+                PieceCursor.instance.Select(pieceType, null);
             }
-            else
-            {
-                Debug.LogError("PieceCursor.instance が見つかりません。");
-            }
-
             return;
         }
 
-        // 通常駒は Stock 経由
         if (stock == null)
         {
             Debug.LogError("Stock が付いていません: " + gameObject.name);
             return;
         }
 
-        stock.Select(number, turn);
+        stock.Select(pieceType, turn);
     }
 }

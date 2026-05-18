@@ -10,7 +10,7 @@ public class NetworkRecordManager : NetworkBehaviour
         recordManager = rm;
     }
     public void SendAddMove(
-        int pieceType,
+        PieceType pieceType,
         int rotation,
         bool flipped,
         int x,
@@ -19,7 +19,7 @@ public class NetworkRecordManager : NetworkBehaviour
         bool touchdown
     )
     {
-        RpcAddMove(pieceType, rotation, flipped, x, y, player, touchdown);
+        RpcAddMove((int)pieceType, rotation, flipped, x, y, player, touchdown);
     }
 
     [Rpc(RpcSources.All, RpcTargets.All)]
@@ -34,7 +34,7 @@ public class NetworkRecordManager : NetworkBehaviour
     )
     {
         recordManager.AddMove(
-            pieceType,
+            (PieceType)pieceType,
             rotation,
             flipped,
             x,
