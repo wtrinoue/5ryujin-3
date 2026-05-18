@@ -6,8 +6,8 @@ using UnityEngine;
 public class PieceData : ScriptableObject
 {
     public PieceType pieceType;
-    public List<Vector2Int> tiles;
-    public List<Vector2> magnets;
+    public List<Vector2Int> tiles = new();
+    public List<Vector2> magnets = new();
 }
 
 public enum PieceType
