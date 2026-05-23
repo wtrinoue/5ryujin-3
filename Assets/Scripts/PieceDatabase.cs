@@ -1,13 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-public class PieceDatabase : MonoBehaviour
+
+[CreateAssetMenu(fileName = "PieceDatabase", menuName = "Ryujin/PieceDatabase")]
+public class PieceDatabase : ScriptableObject
 {
-    public List<PieceData> pieces;
+    [SerializeField]
+    private List<PieceData> pieces;
 
     private Dictionary<PieceType, PieceData> dict;
 
-    void Awake()
+    private void OnEnable()
     {
         dict = pieces.ToDictionary(p => p.pieceType);
     }
@@ -16,6 +19,4 @@ public class PieceDatabase : MonoBehaviour
     {
         return dict[type];
     }
-
-    public static PieceDatabase Instance;
 }
