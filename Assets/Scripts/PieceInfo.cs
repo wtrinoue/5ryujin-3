@@ -107,22 +107,24 @@ public class PieceInfo
         var tiles = GetChildTiles(md);
         var magnets = GetChildMagnets(md);
 
-        Debug.Log("===== PieceInfo Debug =====");
-        Debug.Log($"PieceType: {pieceData.pieceType}");
-        Debug.Log($"MoveData: pos({md.x},{md.y}) rot({md.rotation}) flipped({md.flipped})");
+        string log = "===== PieceInfo Debug =====\n";
+        log += $"PieceType: {pieceData.pieceType}\n";
+        log += $"MoveData: pos({md.x},{md.y}) rot({md.rotation}) flipped({md.flipped})\n";
 
-        Debug.Log("--- Tiles ---");
+        log += "--- Tiles ---\n";
         for (int i = 0; i < tiles.Count; i++)
         {
-            Debug.Log($"Tile[{i}] = {tiles[i]}");
+            log += $"Tile[{i}] = {tiles[i]}\n";
         }
 
-        Debug.Log("--- Magnets ---");
+        log += "--- Magnets ---\n";
         for (int i = 0; i < magnets.Count; i++)
         {
-            Debug.Log($"Magnet[{i}] = {magnets[i]}");
+            log += $"Magnet[{i}] = {magnets[i]}\n";
         }
 
-        Debug.Log("===========================");
+        log += "===========================";
+
+        Debug.Log(log);
     }
 }

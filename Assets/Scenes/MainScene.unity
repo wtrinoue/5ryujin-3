@@ -2831,6 +2831,7 @@ MonoBehaviour:
     serializedVersion: 2
     rgba: 4278190085
   recordManager: {fileID: 1910646975}
+  pieceDatabase: {fileID: 11400000, guid: 511ead666f8708c4a82497675530c7e7, type: 2}
 --- !u!4 &1289163784
 Transform:
   m_ObjectHideFlags: 0

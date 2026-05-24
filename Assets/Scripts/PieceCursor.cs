@@ -172,6 +172,7 @@ public class PieceCursor : MonoBehaviour
         // =========================
         PieceInfo info = new PieceInfo(pieceDatabase.Get(pieceType));
         info.TestDebug(md);
+        TestDebugCursor();
 
         if (mm.Add(this))
         {
@@ -281,5 +282,32 @@ public class PieceCursor : MonoBehaviour
         if (ry < 0) ry += 360;
 
         return ry == 180;
+    }
+
+    public void TestDebugCursor()
+    {
+        string log = "===== PieceCursor Debug =====\n";
+        log += $"PieceType: {pieceType}\n";
+        log += $"Position: ({transform.position.x},{transform.position.y})\n";
+        log += $"RotationZ: {piece.transform.eulerAngles.z}\n";
+        log += $"FlippedY: {piece.transform.eulerAngles.y}\n";
+
+        log += "--- ChildTiles (Transform) ---\n";
+        for (int i = 0; i < childTiles.Count; i++)
+        {
+            Vector3 p = childTiles[i].position;
+            log += $"Tile[{i}] = ({Mathf.RoundToInt(p.x)}, {Mathf.RoundToInt(p.y)})\n";
+        }
+
+        log += "--- ChildMagnets (Transform) ---\n";
+        for (int i = 0; i < childMagnets.Count; i++)
+        {
+            Vector3 p = childMagnets[i].position;
+            log += $"Magnet[{i}] = ({p.x:F2}, {p.y:F2})\n";
+        }
+
+        log += "==============================";
+
+        Debug.Log(log);
     }
 }
