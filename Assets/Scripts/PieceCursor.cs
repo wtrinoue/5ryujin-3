@@ -23,7 +23,7 @@ public class PieceCursor : MonoBehaviour
     public List<Transform> childMagnets = new List<Transform>();
     public List<Transform> childTiles = new List<Transform>();
 
-    private Map mm = new Map();
+    private Map mm;
 
     public Color32 color1p;
     public Color32 color2p;
@@ -46,6 +46,8 @@ public class PieceCursor : MonoBehaviour
             if (p.prefab != null)
                 pieces[p.type] = p.prefab;
         }
+
+        mm = new Map(pieceDatabase);
     }
 
     void Update()
@@ -173,8 +175,9 @@ public class PieceCursor : MonoBehaviour
         PieceInfo info = new PieceInfo(pieceDatabase.Get(pieceType));
         info.TestDebug(md);
         TestDebugCursor();
-
-        if (mm.Add(this))
+        // Debug.Log($"mm.Add(this) = {mm.Add(this)}");
+        // Debug.Log($"mm.AddFromMd(md) = {mm.AddFromMd(md)}");
+        if (mm.AddFromMd(md))
         {
             if (recordManager != null)
             {
@@ -193,10 +196,14 @@ public class PieceCursor : MonoBehaviour
 
             if (stock != null)
                 stock.Decrement();
-
+            // pdictへの追加
+            if (pieceType == PieceType.P)
+            {
+                Debug.Log("Pゴマを追加しました");
+                mm.AddPDict(md, piece);
+            }
             piece.transform.SetParent(transform.parent);
             piece = null;
-
             Board.instance.Change();
         }
     }

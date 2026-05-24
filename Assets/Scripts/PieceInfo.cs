@@ -92,6 +92,23 @@ public class PieceInfo
 
         return result;
     }
+    // =========================
+    // Pointer（補助ポイント）
+    // =========================
+    public Vector2 GetPointer(MoveData md)
+    {
+        // カーソル基準のローカル座標
+        Vector2 localPointer = new Vector2(0.5f, 0.5f);
+
+        // flip → rotate
+        Vector2 transformed = Transform(localPointer, md);
+
+        // ワールド座標へ
+        return new Vector2(
+            transformed.x + md.x,
+            transformed.y + md.y
+        );
+    }
 
     // =========================
     // 一括取得（便利用）
@@ -106,6 +123,7 @@ public class PieceInfo
     {
         var tiles = GetChildTiles(md);
         var magnets = GetChildMagnets(md);
+        var pointer = GetPointer(md);
 
         string log = "===== PieceInfo Debug =====\n";
         log += $"PieceType: {pieceData.pieceType}\n";
@@ -122,6 +140,9 @@ public class PieceInfo
         {
             log += $"Magnet[{i}] = {magnets[i]}\n";
         }
+
+        log += "--- Pointer ---\n";
+        log += $"Pointer = {pointer}\n";
 
         log += "===========================";
 
