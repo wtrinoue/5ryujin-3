@@ -6,16 +6,18 @@ using System.Linq;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEditor;
 
-public class Map
+public class MdMap
 {
-
     Dictionary<(float x, float y), (bool player, int num)> magnetMap;
     Dictionary<(float x, float y), bool> placedTiles;
     Dictionary<bool, int> dragonCount;
     public static Dictionary<(bool, int), (GameObject go, List<(float x, float y)> pos)> pdict;
     public static Dictionary<bool, int> reach;
-    public Map()
+    public PieceDatabase pieceDatabase;
+    public bool pdicAddable = false;
+    public MdMap(PieceDatabase pieceDatabase)
     {
+        this.pieceDatabase = pieceDatabase;
         pdict = new Dictionary<(bool, int), (GameObject go, List<(float x, float y)> pos)>();
         reach = new Dictionary<bool, int> { { false, 0 }, { true, 29 } };
         this.magnetMap = new Dictionary<(float x, float y), (bool player, int num)>();
@@ -26,18 +28,27 @@ public class Map
     {
         return (Mathf.Round(v.x * 2) / 2, Mathf.Round(v.y * 2) / 2);
     }
-    public bool Add(PieceCursor piece)
+
+    public bool Add(MoveData md)
     {
-        bool player = Board.turn;
+        PieceData pd = pieceDatabase.Get(md.pieceType);
+        PieceInfo info = new PieceInfo(pd);
+        List<(float x, float y)> childTiles =
+            info.GetChildTiles(md)
+                .ConvertAll(v => ((float)v.x, (float)v.y));
+        List<(float x, float y)> childMagnets =
+            info.GetChildMagnets(md)
+                .ConvertAll(v => ((float)v.x, (float)v.y));
+        bool player = md.player; // $MoveDataから持っていける。
         int num = 0;
         //Debug.Log(piece.childTiles.Count);
         int neighbor = 0;
         bool first = false;
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < childTiles.Count; i++)
         {
-            var t = piece.childTiles[i];
+            (float x, float y) t = childTiles[i];
 
-            var tp = ToTuple(t.transform.position);
+            (float x, float y) tp = (t.x, t.y);
             if (placedTiles.ContainsKey(tp))
             {
                 return false;
@@ -48,10 +59,10 @@ public class Map
             }
             foreach ((float x, float y) d in new (float, float)[] { (-1, 0), (1, 0), (0, -1), (0, 1) })
             {
-                var p = (tp.x + d.x, tp.y + d.y);
+                (float x, float y) p = (tp.x + d.x, tp.y + d.y);
                 if (placedTiles.ContainsKey(p))
                 {
-                    if (placedTiles[p] == Board.turn)
+                    if (placedTiles[p] == player)
                     {
                         neighbor++;
                     }
@@ -61,50 +72,33 @@ public class Map
         }
 
 
-        for (int i = 0; i < piece.childMagnets.Count; i++)
+        for (int i = 0; i < childMagnets.Count; i++)
         {
-            if (piece.pieceType == PieceType.P)
+            if (md.pieceType == PieceType.P)
             {
-                var p = piece.transform.GetChild(0).Find("Pointer");
-                var y = p.transform.position.y;
+                Debug.Log("Pゴマがおかれました");
+                Vector2 v = info.GetPointer(md);
+                (float x, float y) p = (v.x, v.y);
+                float y = p.y;
                 y = Mathf.Round(y * 2) / 2;
-                if (y == 0.5 && !Board.turn || y == 28.5 && Board.turn)
+                if (y == 0.5 && !player || y == 28.5 && player)
                 {
-                    var tps = new List<(float, float)>();
-                    for (int j = 0; j < 5; j++)
+                    List<(float, float)> tps = new();
+                    for (int j = 0; j < childTiles.Count; j++)
                     {
-                        var c = piece.childTiles[j];
-                        var tp = ToTuple(c.transform.position);
-                        tps.Add(tp);
+                        (float x, float y) c = childTiles[j];
+                        tps.Add(c);
                     }
-                    num = dragonCount[Board.turn];
-                    dragonCount[Board.turn] += 1;
                     first = true;
-                    pdict.Add((Board.turn, num), (piece.transform.GetChild(0).gameObject, tps));
                     break;
                 }
                 else
                 {
+                    Debug.Log("ダメでした");
                     return false;
                 }
-                // bool a = false;
-                // for (int j = 0; j < piece.childTiles.Count; j++)
-                // {
-                //     Debug.Log(piece.childTiles[j].transform.position.y);
-                //     var y = piece.childTiles[j].transform.position.y;
-                //     if (y == 0&&!Board.turn||y == 29&&Board.turn)
-                //     {
-                //         a = true;
-                //         break;
-                //     }
-                // }
-                // if (a)
-                // {
-                //     break;
-                // }
             }
-            var m = piece.childMagnets[i];
-            var t = ToTuple(m.transform.position);
+            (float x, float y) t = childMagnets[i];
             if (magnetMap.ContainsKey(t))
             {
                 if (player == magnetMap[t].player)
@@ -115,7 +109,7 @@ public class Map
                 }
 
             }
-            if (i == piece.childMagnets.Count - 1)
+            if (i == childMagnets.Count - 1)
             {
                 return false;
             }
@@ -125,7 +119,7 @@ public class Map
             return false;
         }
         int r;
-        if (Board.turn)
+        if (player)
         {
             r = 29;
         }
@@ -133,14 +127,13 @@ public class Map
         {
             r = 0;
         }
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < childTiles.Count; i++)
         {
-            var t = piece.childTiles[i];
-            var tp = ToTuple(t.transform.position);
-            this.placedTiles.Add(tp, Board.turn);
-            if (piece.pieceType == PieceType.td)
+            (float x, float y) tp = childTiles[i];
+            this.placedTiles.Add(tp, player);
+            if (md.pieceType == PieceType.td)
             {
-                if (Board.turn)
+                if (player)
                 {
                     r = (int)Mathf.Min(r, tp.y);
                     reach[true] = (int)Mathf.Min(r, reach[true]);
@@ -160,12 +153,10 @@ public class Map
         {
             magnetMap.Remove(key);
         }
-        for (int i = 0; i < piece.childMagnets.Count; i++)
+        for (int i = 0; i < childMagnets.Count; i++)
         {
-
-            var m = piece.childMagnets[i];
-            var t = ToTuple(m.transform.position);
-            if (magnetMap.ContainsKey(t) || piece.pieceType == PieceType.td)
+            (float x, float y) t = childMagnets[i];
+            if (magnetMap.ContainsKey(t) || md.pieceType == PieceType.td)
             {
 
             }
@@ -174,17 +165,17 @@ public class Map
                 magnetMap.Add(t, (player, num));
             }
         }
-        if (piece.pieceType == PieceType.td)
+        if (md.pieceType == PieceType.td)
         {
             //Debug.Log(0);
-            var p = pdict[(Board.turn, num)];
+            var p = pdict[(player, num)];
             p.go.SetActive(false);
             foreach (var item in p.pos)
             {
                 //Debug.Log(item);
                 placedTiles.Remove(item);
             }
-            if (Board.turn)
+            if (player)
             {
                 if (r == 0)
                 {
@@ -204,6 +195,51 @@ public class Map
         return true;
 
 
+    }
+    public void AddPDict(MoveData md, GameObject go)
+    {
+        PieceData pd = pieceDatabase.Get(md.pieceType);
+        PieceInfo info = new PieceInfo(pd);
+
+        List<(float x, float y)> childTiles =
+            info.GetChildTiles(md)
+                .ConvertAll(v => ((float)v.x, (float)v.y));
+
+        // IDは内部で発行
+        bool player = md.player;
+
+        int num = dragonCount[player];
+        dragonCount[player]++;
+
+        pdict[(player, num)] = (go, childTiles);
+        DebugPrintPDict();
+    }
+
+    public void DebugPrintPDict()
+    {
+        if (pdict == null)
+        {
+            Debug.Log("pdict is NULL");
+            return;
+        }
+
+        string log = "===== PDICT DUMP =====\n";
+        log += $"Count = {pdict.Count}\n";
+
+        foreach (var kvp in pdict)
+        {
+            var key = kvp.Key;
+            var value = kvp.Value;
+
+            string goName = value.go != null ? value.go.name : "NULL";
+            int posCount = value.pos != null ? value.pos.Count : -1;
+
+            log += $"key={key} | go={goName} | posCount={posCount}\n";
+        }
+
+        log += "===== END =====";
+
+        Debug.Log(log);
     }
     static List<(float x, float y)> GetKeysFromValue(Dictionary<(float x, float y), (bool player, int num)> dictionary, (bool player, int num) value)
     {

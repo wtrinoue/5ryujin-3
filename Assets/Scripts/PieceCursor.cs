@@ -23,7 +23,7 @@ public class PieceCursor : MonoBehaviour
     public List<Transform> childMagnets = new List<Transform>();
     public List<Transform> childTiles = new List<Transform>();
 
-    private Map mm;
+    private MdMap mm;
 
     public Color32 color1p;
     public Color32 color2p;
@@ -47,7 +47,7 @@ public class PieceCursor : MonoBehaviour
                 pieces[p.type] = p.prefab;
         }
 
-        mm = new Map(pieceDatabase);
+        mm = new MdMap(pieceDatabase);
     }
 
     void Update()
@@ -177,7 +177,7 @@ public class PieceCursor : MonoBehaviour
         TestDebugCursor();
         // Debug.Log($"mm.Add(this) = {mm.Add(this)}");
         // Debug.Log($"mm.AddFromMd(md) = {mm.AddFromMd(md)}");
-        if (mm.AddFromMd(md))
+        if (mm.Add(md))
         {
             if (recordManager != null)
             {
@@ -190,7 +190,6 @@ public class PieceCursor : MonoBehaviour
                     player: player,
                     touchdown: touchdown
                 );
-
                 recordManager.SaveRecord();
             }
 
