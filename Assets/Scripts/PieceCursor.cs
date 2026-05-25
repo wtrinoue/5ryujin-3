@@ -23,7 +23,7 @@ public class PieceCursor : MonoBehaviour
     public List<Transform> childMagnets = new List<Transform>();
     public List<Transform> childTiles = new List<Transform>();
 
-    private MdMap mm;
+    public MdMap mm;
 
     public Color32 color1p;
     public Color32 color2p;
@@ -205,6 +205,11 @@ public class PieceCursor : MonoBehaviour
             piece = null;
             Board.instance.Change();
         }
+    }
+
+    public void PutFromMd(MoveData md)
+    {
+
     }
 
     public void Trash()
