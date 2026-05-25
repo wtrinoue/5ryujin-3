@@ -194,7 +194,7 @@ public class PieceCursor : MonoBehaviour
             }
 
             if (stock != null)
-                stock.Decrement();
+                Board.instance.DecrementStock(player, pieceType);
             // pdictへの追加
             if (pieceType == PieceType.P)
             {

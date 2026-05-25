@@ -32,11 +32,13 @@ public class Board : MonoBehaviour
     private List<PieceImagePair> images;
 
     private Dictionary<PieceType, GameObject> imageDict;
+    private Dictionary<(bool, PieceType), Stock> stockDict;
 
     void Start()
     {
         turn = false;
         instance = this;
+        stockDict = new Dictionary<(bool, PieceType), Stock>();
 
         // Dictionary化
         imageDict = new Dictionary<PieceType, GameObject>();
@@ -94,6 +96,9 @@ public class Board : MonoBehaviour
             st.isFirstPlayer = true;
             st.image = imagePrefab;
 
+            // stockDictに追加
+            stockDict[(true, type)] = st;
+
             t.transform.localPosition = new Vector3(pieceIndex * 150 - 825, 480, 0);
 
             // 下側（1P）
@@ -106,6 +111,9 @@ public class Board : MonoBehaviour
             st.pieceType = type;
             st.isFirstPlayer = false;
             st.image = imagePrefab;
+
+            // stockDictに追加
+            stockDict[(false, type)] = st;
 
             t.transform.localPosition = new Vector3(pieceIndex * 150 - 825, -480, 0);
 
@@ -194,5 +202,17 @@ public class Board : MonoBehaviour
     public void Restart()
     {
         SceneManager.LoadScene("HomeScene");
+    }
+
+    public void DecrementStock(bool player, PieceType type)
+    {
+        if (stockDict.TryGetValue((player, type), out Stock stock))
+        {
+            stock.Decrement(); // Stock側にある想定
+        }
+        else
+        {
+            Debug.LogError($"Stockが見つかりません: player={player}, type={type}");
+        }
     }
 }
