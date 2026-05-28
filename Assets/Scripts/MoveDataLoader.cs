@@ -86,7 +86,7 @@ public class MoveDataLoader : MonoBehaviour
             r.color = c;
         }
         // マップ登録
-        mm.Add(md);
+        mm.ApplyAdd(md);
     }
     public void LoadMoveDataList(List<MoveData> moveList)
     {

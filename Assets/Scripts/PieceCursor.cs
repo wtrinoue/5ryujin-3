@@ -181,7 +181,7 @@ public class PieceCursor : MonoBehaviour
         TestDebugCursor();
         // Debug.Log($"mm.Add(this) = {mm.Add(this)}");
         // Debug.Log($"mm.AddFromMd(md) = {mm.AddFromMd(md)}");
-        if (moveDataLoader.mm.Add(md))
+        if (moveDataLoader.mm.CanAdd(md))
         {
             if (recordManager != null)
             {
@@ -209,6 +209,7 @@ public class PieceCursor : MonoBehaviour
             piece = null;
             Board.instance.Change();
             moveDataList.Add(md);
+            moveDataLoader.LoadMoveData(md);
         }
         DebugLogMoveDataList(moveDataList);
     }
