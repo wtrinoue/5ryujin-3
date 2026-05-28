@@ -11,3 +11,5 @@
 1. MoveDataからPieceCursorの必要な要素を復元することができれば、MapはMoveDataの履歴から復元することができる。
 1. MagnetMapのAddメソッドをMoveDataから行えるようにして、同時に履歴を全削除するClearを導入すればMoveDataのリストからすべてを復元することができる可能性がある。
 1. MoveDataからマグネットの位置やタイルの位置を復元できる機能が必要。
+1. MovedataLoaderにより復元とリセットができるようになった
+1. MdMapの責務を分離して、Addメソッドを判定用のCanAddと追加用のApplyAddに分けた
