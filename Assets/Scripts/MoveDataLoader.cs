@@ -112,9 +112,24 @@ public class MoveDataLoader : MonoBehaviour
         pieceContainer = new GameObject("PieceContainer");
     }
 
+    public void LoadMoveDataFromIndex(List<MoveData> moveList, int index)
+    {
+        if (index >= 0 && index < moveList.Count)
+        {
+            Reset();
+            LoadMoveDataList(moveList.GetRange(0, index + 1));
+        }
+    }
+
+    public void TestLoad2()
+    {
+        LoadMoveDataFromIndex(mdList, 2);
+    }
     public void TestLoad()
     {
-        List<MoveData> mdList = new List<MoveData>
+        LoadMoveDataList(mdList);
+    }
+    List<MoveData> mdList = new List<MoveData>
         {
             new MoveData
             {
@@ -184,6 +199,4 @@ public class MoveDataLoader : MonoBehaviour
             }
         };
 
-        LoadMoveDataList(mdList);
-    }
 }
